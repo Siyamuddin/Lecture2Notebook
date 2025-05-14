@@ -47,9 +47,11 @@ def download_audio(youtube_url: str) -> str:
         'postprocessors': [{
             'key': 'FFmpegExtractAudio',
             'preferredcodec': 'mp3',
-            'preferredquality': '64',  # Lower bitrate = smaller file
+            'preferredquality': '64',
         }],
-        'quiet': False,
+        'quiet': True,
+        'noplaylist': True,
+        'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
     }
 
     try:
@@ -60,6 +62,29 @@ def download_audio(youtube_url: str) -> str:
     except Exception as e:
         print(f"yt_dlp download error: {e}")
         return None
+
+# def download_audio(youtube_url: str) -> str:
+#     print("Downloading audio...")
+#     output_path = "audio.%(ext)s"
+#     ydl_opts = {
+#         'format': 'bestaudio/best',
+#         'outtmpl': output_path,
+#         'postprocessors': [{
+#             'key': 'FFmpegExtractAudio',
+#             'preferredcodec': 'mp3',
+#             'preferredquality': '64',  # Lower bitrate = smaller file
+#         }],
+#         'quiet': False,
+#     }
+#
+#     try:
+#         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+#             ydl.download([youtube_url])
+#             print("Audio downloaded!")
+#         return "audio.mp3"
+#     except Exception as e:
+#         print(f"yt_dlp download error: {e}")
+#         return None
 
 
 def transcribe_audio(file_path: str) -> str:

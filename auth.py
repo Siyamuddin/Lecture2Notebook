@@ -9,7 +9,6 @@ headers = {
 TIMEOUT = 3
 
 
-
 def get_student_info(student_id: str, password: str):
     print(f"Student authentication started")
     login_data = {
