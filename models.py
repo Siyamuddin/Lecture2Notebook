@@ -7,8 +7,10 @@ class YouTubeRequest(BaseModel):
 
 class YouTubeResponse(BaseModel):
     student_name: str
+    student_department: str
     student_major: str
     message: str
     notebook_link: str
+    class_summery: str
     transcript: str
 

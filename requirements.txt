@@ -1,0 +1,8 @@
+fastapi
+uvicorn[standard]
+python-dotenv
+yt_dlp
+nbformat
+groq
+pydantic
+requests
