@@ -6,3 +6,4 @@ nbformat
 groq
 pydantic
 requests
+beautifulsoup4
