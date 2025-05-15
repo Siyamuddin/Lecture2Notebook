@@ -39,8 +39,15 @@ from groq import Groq
 #     return "audio.m4a"
 
 def download_audio(youtube_url: str) -> str:
+    import random
+    import time
+
     print("Downloading audio...")
     output_path = "audio.%(ext)s"
+
+    # Add randomized sleep to avoid rate limits
+    time.sleep(random.uniform(1, 3))
+
     ydl_opts = {
         'format': 'bestaudio/best',
         'outtmpl': output_path,
@@ -52,6 +59,11 @@ def download_audio(youtube_url: str) -> str:
         'quiet': True,
         'noplaylist': True,
         'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+        'geo_bypass': True,  # Bypass geo-restrictions
+        'retries': 3,        # Retry on network issues
+        'nocheckcertificate': True,  # Ignore SSL cert errors
+        'sleep_interval_requests': 1,  # Add delays between multiple requests
+        'forceipv4': True,  # Avoid some IPv6-related errors
     }
 
     try:
@@ -62,6 +74,7 @@ def download_audio(youtube_url: str) -> str:
     except Exception as e:
         print(f"yt_dlp download error: {e}")
         return None
+
 
 # def download_audio(youtube_url: str) -> str:
 #     print("Downloading audio...")
