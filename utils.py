@@ -123,7 +123,7 @@ def generate_code(prompt: str) -> str:
             {
                 "role": "system",
                 "content": (
-up                    "You are a helpful assistant that reads Python lecture transcriptions and extracts clean, organized Python code examples. "
+                    "You are a helpful assistant that reads Python lecture transcriptions and extracts clean, organized Python code examples. "
                     "Group related code under clear topic headers like '**Section: Topic Name**'. "
                     "For each topic the professor discusses (e.g., arrays, lambda functions, file handling), create a section with:\n"
                     "1. A markdown header in the format '**Section: Topic Name**'\n"
