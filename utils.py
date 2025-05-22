@@ -123,28 +123,60 @@ def generate_code(prompt: str) -> str:
             {
                 "role": "system",
                 "content": (
-                    "You are a helpful assistant that reads Python lecture transcriptions, detects the lecture topics and generates clean, organized Python code examples. "
-                    "Each topic explained by the professor (e.g., arrays, lambda functions, file handling, etc.) should have its own code block. "
-                    "Only include the code examples that the professor explicitly gave while teaching, and format them clearly using comments to separate sections. "
-                    "The output should be ready to use in Google Colab and suitable for beginner students to run and learn from."
+up                    "You are a helpful assistant that reads Python lecture transcriptions and extracts clean, organized Python code examples. "
+                    "Group related code under clear topic headers like '**Section: Topic Name**'. "
+                    "For each topic the professor discusses (e.g., arrays, lambda functions, file handling), create a section with:\n"
+                    "1. A markdown header in the format '**Section: Topic Name**'\n"
+                    "2. A code block wrapped in triple backticks with the language specified (```python)\n\n"
+                    "This format helps create a Jupyter Notebook with each section in a separate code cell.\n"
+                    "Only include the actual code examples the professor gave, cleaned up and formatted for beginner learners."
                 )
             },
             {
                 "role": "user",
-                "content": f"tThis is a video transcription of a Python lecture. Please extract all the example codes the professor provided and organize them by topic with commens:\n\n{prompt}"
+                "content": f"This is a video transcription of a Python lecture. Please extract all the example codes the professor provided and organize them by topic with comments:\n\n{prompt}"
             }
         ],
         model="llama-3.1-8b-instant",
     )
     return response.choices[0].message.content
 
+# def save_to_notebook(code: str) -> str:
+#     filename = f"{uuid.uuid4().hex}.ipynb"
+#     print(f"[INFO] GENERATED_CODE: Saving started")
+#     nb = nbf.v4.new_notebook()
+#     nb.cells.append(nbf.v4.new_code_cell(code))
+#     with open(filename, 'w') as f:
+#         nbf.write(nb, f)
+#     return filename
 def save_to_notebook(code: str) -> str:
     filename = f"{uuid.uuid4().hex}.ipynb"
     print(f"[INFO] GENERATED_CODE: Saving started")
+
+
     nb = nbf.v4.new_notebook()
-    nb.cells.append(nbf.v4.new_code_cell(code))
+
+    code_sections = code.split('**Section')
+
+    for i, section in enumerate(code_sections):
+        if section.strip() == "":
+            continue
+
+        header_and_code = section.strip().split("```python")
+        if len(header_and_code) == 2:
+            title = f"Section {header_and_code[0].strip()}"
+            code_block = header_and_code[1].replace("```", "").strip()
+
+            nb.cells.append(nbf.v4.new_markdown_cell(f"### {title}"))
+
+            nb.cells.append(nbf.v4.new_code_cell(code_block))
+        else:
+            nb.cells.append(nbf.v4.new_markdown_cell(section.strip()))
+
+
     with open(filename, 'w') as f:
         nbf.write(nb, f)
+
     return filename
 
 def generate_class_summery(prompt: str) -> str:
