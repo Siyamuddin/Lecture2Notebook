@@ -38,56 +38,32 @@ from groq import Groq
 #
 #     return "audio.m4a"
 
-def download_audio(youtube_url: str) -> str:
-    import random
-    import time
-
-    print("Downloading audio...")
-    output_path = "audio.%(ext)s"
-
-    # Add randomized sleep to avoid rate limits
-    time.sleep(random.uniform(1, 3))
-
-    ydl_opts = {
-        'format': 'bestaudio/best',
-        'outtmpl': output_path,
-        'postprocessors': [{
-            'key': 'FFmpegExtractAudio',
-            'preferredcodec': 'mp3',
-            'preferredquality': '64',
-        }],
-        'quiet': True,
-        'noplaylist': True,
-        'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
-        'geo_bypass': True,  # Bypass geo-restrictions
-        'retries': 3,        # Retry on network issues
-        'nocheckcertificate': True,  # Ignore SSL cert errors
-        'sleep_interval_requests': 1,  # Add delays between multiple requests
-        'forceipv4': True,  # Avoid some IPv6-related errors
-    }
-
-    try:
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            ydl.download([youtube_url])
-            print("Audio downloaded!")
-        return "audio.mp3"
-    except Exception as e:
-        print(f"yt_dlp download error: {e}")
-        return None
-
-
 # def download_audio(youtube_url: str) -> str:
+#     import random
+#     import time
+#
 #     print("Downloading audio...")
 #     output_path = "audio.%(ext)s"
+#
+#     # Add randomized sleep to avoid rate limits
+#     time.sleep(random.uniform(1, 3))
+#
 #     ydl_opts = {
 #         'format': 'bestaudio/best',
 #         'outtmpl': output_path,
 #         'postprocessors': [{
 #             'key': 'FFmpegExtractAudio',
 #             'preferredcodec': 'mp3',
-#             'preferredquality': '64',  # Lower bitrate = smaller file
+#             'preferredquality': '64',
 #         }],
-#         'quiet': False,
+#         'quiet': True,
+#         'noplaylist': True,
+#         'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+#         'geo_bypass': True,  # Bypass geo-restrictions
+#         'retries': 3,        # Retry on network issues
+#         'nocheckcertificate': True,  # Ignore SSL cert errors
+#         'sleep_interval_requests': 1,  # Add delays between multiple requests
+#         'forceipv4': True,  # Avoid some IPv6-related errors
 #     }
 #
 #     try:
@@ -100,8 +76,32 @@ def download_audio(youtube_url: str) -> str:
 #         return None
 
 
+def download_audio(youtube_url: str) -> str:
+    print("Downloading audio...")
+    output_path = "audio.%(ext)s"
+    ydl_opts = {
+        'format': 'bestaudio/best',
+        'outtmpl': output_path,
+        'postprocessors': [{
+            'key': 'FFmpegExtractAudio',
+            'preferredcodec': 'mp3',
+            'preferredquality': '64',  # Lower bitrate = smaller file
+        }],
+        'quiet': False,
+    }
+
+    try:
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            ydl.download([youtube_url])
+            print("Audio downloaded!")
+        return "audio.mp3"
+    except Exception as e:
+        print(f"yt_dlp download error: {e}")
+        return None
+
+
 def transcribe_audio(file_path: str) -> str:
-    print("Transcribing audio...")
+    print("Transcribing audio started...")
     client = Groq(api_key=os.getenv("GROQ_API_KEY"))
     print("File Path: "+file_path)
     filename = file_path
@@ -117,6 +117,7 @@ def transcribe_audio(file_path: str) -> str:
     return transcription.text
 
 def generate_code(prompt: str) -> str:
+    print("Generating code started...")
     client = Groq(api_key=os.getenv("GROQ_API_KEY"))
     response = client.chat.completions.create(
         messages=[
@@ -139,6 +140,7 @@ def generate_code(prompt: str) -> str:
         ],
         model="llama-3.1-8b-instant",
     )
+    print("Generating code finished...")
     return response.choices[0].message.content
 
 # def save_to_notebook(code: str) -> str:
@@ -150,6 +152,7 @@ def generate_code(prompt: str) -> str:
 #         nbf.write(nb, f)
 #     return filename
 def save_to_notebook(code: str) -> str:
+    print("Saving file started...")
     filename = f"{uuid.uuid4().hex}.ipynb"
     print(f"[INFO] GENERATED_CODE: Saving started")
 
@@ -176,10 +179,12 @@ def save_to_notebook(code: str) -> str:
 
     with open(filename, 'w') as f:
         nbf.write(nb, f)
+    print("Saving file finished!...")
 
     return filename
 
 def generate_class_summery(prompt: str) -> str:
+    print("summery generation started...")
     client = Groq(api_key=os.getenv("GROQ_API_KEY"))
     response = client.chat.completions.create(
         messages=[
@@ -199,10 +204,14 @@ def generate_class_summery(prompt: str) -> str:
         ],
         model="llama-3.1-8b-instant",
     )
+    print("summery generation finished...")
     return response.choices[0].message.content
 
 def is_junior(id_str: str,limit: int) -> bool:
+    print("Checking is junior started...")
 
     if len(id_str) < 2 or not id_str[:2].isdigit():
-        return False  # Handle edge cases like too short or non-numeric start
+        return False
+    # Handle edge cases like too short or non-numeric start
+    print("Checking is junior finished...")
     return int(id_str[:2]) > limit

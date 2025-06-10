@@ -98,7 +98,8 @@ python -m venv venv
 source venv/bin/activate  # or venv\Scripts\activate on Windows
 pip install -r requirements.txt
 uvicorn main:app --reload
-3️⃣ Frontend Setup
+```
+### 3️⃣ Frontend Setup
 bash
 Copy
 Edit
@@ -107,13 +108,8 @@ npm install
 npm run dev
 📚 Acknowledgements
 OpenAI Whisper
-
 Groq + LLaMA 3.1
-
 nbformat
-
-Supabase
-
 Sejong University
 
 📌 Author
