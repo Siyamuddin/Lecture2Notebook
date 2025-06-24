@@ -3,7 +3,7 @@ FROM python:3.13.0-slim
 
 WORKDIR /app
 
-# Install FFmpeg and system dependencies
+# Install FFmpeg for yt_dlp postprocessing
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ffmpeg \
     && apt-get clean \
@@ -13,8 +13,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy project files
+# Copy project files, including cookies.txt
 COPY . .
+COPY cookies.txt /app/cookies.txt
 
-# Start the FastAPI app with Uvicorn
+# Start FastAPI app
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "10000"]

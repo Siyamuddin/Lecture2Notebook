@@ -50,20 +50,14 @@ def download_audio(youtube_url: str) -> str:
 
     ydl_opts = {
         'format': 'bestaudio/best',
-        'outtmpl': output_path,
+        'outtmpl': 'audio.%(ext)s',
+        'cookiefile': 'cookies.txt',  # This line is essential
         'postprocessors': [{
             'key': 'FFmpegExtractAudio',
             'preferredcodec': 'mp3',
             'preferredquality': '64',
         }],
-        'quiet': True,
-        'noplaylist': True,
-        'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
-        'geo_bypass': True,  # Bypass geo-restrictions
-        'retries': 3,        # Retry on network issues
-        'nocheckcertificate': True,  # Ignore SSL cert errors
-        'sleep_interval_requests': 1,  # Add delays between multiple requests
-        'forceipv4': True,  # Avoid some IPv6-related errors
+        'quiet': False,
     }
 
     try:
