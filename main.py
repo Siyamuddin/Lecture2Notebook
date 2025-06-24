@@ -56,7 +56,7 @@ def cleanup_old_entries():
     last_cleanup = now
     print(f"Memory cleanup completed at {time.strftime('%H:%M:%S')}")
 
-def schedule_deletion(filename, delay=15):
+def schedule_deletion(filename, delay=60):
     def delete_if_not_downloaded():
         time.sleep(delay)
         with file_management_lock:
@@ -130,7 +130,7 @@ async def generate_colab(req: YouTubeRequest):
             pending_files[notebook_path] = {"downloaded": False}
             schedule_deletion(notebook_path)
 
-        expiry_seconds = 15
+        expiry_seconds = 60
         expiry_timestamp = int(time.time()) + expiry_seconds
 
         return YouTubeResponse(
