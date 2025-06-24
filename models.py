@@ -13,4 +13,5 @@ class YouTubeResponse(BaseModel):
     notebook_link: str
     class_summery: str
     transcript: str
+    expiry_timestamp: int  # Unix timestamp when the file will expire
 

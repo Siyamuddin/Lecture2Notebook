@@ -1,120 +1,133 @@
-# 🎓 Lecture2Notebook
+# Python Lecture Video Processor
 
-Lecture2Notebook is an AI-powered full-stack web application that automatically converts Python lecture videos into structured Jupyter Notebooks. It helps students quickly review and practice code examples taught in class by generating well-organized code cells categorized by topic.
-
-> ✨ Built for Sejong University students to streamline learning from lecture recordings.
+This project helps students and educators extract Python code examples and concise summaries from YouTube lecture videos. It downloads the audio from a YouTube video, transcribes it, uses AI to extract and organize code examples, and saves them into a Jupyter Notebook. It also generates a short summary of the lecture.
 
 ---
 
-## 🌐 Live Demo
+## Features
 
-🚀 *Coming soon...*
-
----
-
-## 📸 Screenshots
-
-### 🖥️ Frontend Interface
-<!-- Insert screenshot of the frontend interface here -->
-![Frontend UI](./screenshots/frontend-ui.png)
-
-### 📤 Upload & Processing
-<!-- Insert screenshot showing file upload and processing status -->
-![Upload Example](./screenshots/upload-example.png)
-
-### 📄 Final Jupyter Notebook Output
-<!-- Insert screenshot showing generated notebook preview -->
-![Notebook Output](./screenshots/notebook-output.png)
-
-### 🔒 Authentication (Sejong ID)
-<!-- Insert screenshot showing Sejong login integration -->
-![Sejong Auth](./screenshots/sejong-auth.png)
+- **Download audio** from YouTube lecture videos.
+- **Transcribe audio** to text using state-of-the-art AI (Whisper).
+- **Extract and organize Python code examples** from lecture transcriptions.
+- **Generate Jupyter Notebooks** with code examples grouped by topic.
+- **Create concise lecture summaries** for quick review.
+- **(Optional)**: Check if a student is a "junior" based on their ID.
 
 ---
 
-## 📌 Features
+## Requirements
 
-- 🎤 **Automatic Speech Recognition** using Whisper to transcribe lecture audio.
-- 🧠 **AI Code Extraction** using Groq API + LLaMA 3.1 to identify code examples.
-- 📓 **Notebook Generation** with `nbformat`, structured by topic in separate code cells.
-- 🧪 **Student-Friendly Output** that runs easily in Jupyter or Google Colab.
-- 🔐 **Sejong University Authentication** using student ID & password.
-- 🧰 **Modern Frontend** built with React.js and TypeScript.
-- 🌐 **API-first Backend** using FastAPI and Supabase for authentication and storage.
+- Python 3.8+
+- [yt-dlp](https://github.com/yt-dlp/yt-dlp)
+- [nbformat](https://nbformat.readthedocs.io/en/latest/)
+- [python-dotenv](https://pypi.org/project/python-dotenv/)
+- [Groq Python SDK](https://github.com/groq/groq-python)
+- [FastAPI](https://fastapi.tiangolo.com/) (if using as an API)
+- FFmpeg (for audio processing, required by yt-dlp)
 
----
-
-## 🛠️ Tech Stack
-
-**Frontend:**
-- React.js
-- TypeScript
-- Tailwind CSS
-
-**Backend:**
-- Python
-- FastAPI
-- Whisper (ASR)
-- Groq API (LLaMA 3.1)
-- nbformat
-- Supabase (Auth & DB)
-- Docker
-
----
-
-
----
-
-## 🔄 API Overview
-
-### 🎙️ POST `/upload`
-Upload a lecture video.
-
-### 🔍 POST `/transcribe`
-Transcribe the uploaded video using Whisper.
-
-### 📤 POST `/generate-code`
-Send transcription to LLaMA 3.1 via Groq API for code extraction.
-
-### 🧾 POST `/create-notebook`
-Generate Jupyter Notebook with topic-separated code cells.
-
-> You can test all endpoints using Postman.
-
-<!-- Add Postman screenshot -->
-![Postman Example](./screenshots/postman-example.png)
-
----
-
-## 🧪 How to Run Locally
-
-### 1️⃣ Clone the repository
+Install dependencies with:
 
 ```bash
-git clone https://github.com/Siyamuddin/Lecture2Notebook.git
-cd Lecture2Notebook
-cd backend
-python -m venv venv
-source venv/bin/activate  # or venv\Scripts\activate on Windows
 pip install -r requirements.txt
+```
+
+---
+
+## Setup
+
+1. **Clone the repository:**
+
+   ```bash
+   git clone <your-repo-url>
+   cd fastApiProject
+   ```
+
+2. **Set up environment variables:**
+
+   Create a file named `Secrete.env` in the project root with your API keys:
+
+   ```
+   GROQ_API_KEY=your_groq_api_key_here
+   ```
+
+3. **Install FFmpeg:**
+
+   - On macOS: `brew install ffmpeg`
+   - On Ubuntu: `sudo apt-get install ffmpeg`
+   - On Windows: [Download FFmpeg](https://ffmpeg.org/download.html) and add it to your PATH.
+
+---
+
+## Usage
+
+### As a Python Script
+
+You can use the utility functions in `utils.py` directly in your own scripts or notebooks. Example:
+
+```python
+from utils import download_audio, transcribe_audio, generate_code, save_to_notebook, generate_class_summery
+
+# Step 1: Download audio from YouTube
+audio_file = download_audio("https://www.youtube.com/watch?v=example")
+
+# Step 2: Transcribe audio
+transcription = transcribe_audio(audio_file)
+
+# Step 3: Extract code examples
+code = generate_code(transcription)
+
+# Step 4: Save code to Jupyter Notebook
+notebook_file = save_to_notebook(code)
+
+# Step 5: Generate summary
+summary = generate_class_summery(transcription)
+```
+
+### As an API
+
+If you have a FastAPI app (e.g., in `main.py`), run:
+
+```bash
 uvicorn main:app --reload
 ```
-### 3️⃣ Frontend Setup
-bash
-Copy
-Edit
-cd ../frontend
-npm install
-npm run dev
-📚 Acknowledgements
-OpenAI Whisper
-Groq + LLaMA 3.1
-nbformat
-Sejong University
 
-📌 Author
-Siyam Uddin
-👨‍💻 Computer Science Student @ Sejong University
-🌐 Portfolio
-🔗 LinkedIn | GitHub
+Then use the provided endpoints (see your API docs at `http://127.0.0.1:8000/docs`).
+
+---
+
+## File Structure
+
+```
+fastApiProject/
+  ├── auth.py
+  ├── Dockerfile
+  ├── main.py
+  ├── models.py
+  ├── README.md
+  ├── requirements.txt
+  ├── test_main.http
+  ├── utils.py
+```
+
+---
+
+## Contributing
+
+Pull requests are welcome! For major changes, please open an issue first to discuss what you would like to change.
+
+---
+
+## License
+
+[MIT](LICENSE)
+
+---
+
+## Acknowledgements
+
+- [yt-dlp](https://github.com/yt-dlp/yt-dlp)
+- [Groq](https://groq.com/)
+- [OpenAI Whisper](https://github.com/openai/whisper)
+- [FastAPI](https://fastapi.tiangolo.com/)
+- [Jupyter](https://jupyter.org/)
 
