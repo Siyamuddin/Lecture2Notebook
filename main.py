@@ -26,6 +26,14 @@ WINDOW = 60     # seconds (1 minute)
 CLEANUP_INTERVAL = 300  # 5 minutes
 last_cleanup = time.time()
 
+
+cookie_content = os.getenv("YT_COOKIES")
+if cookie_content:
+    with open("cookies.txt", "w") as f:
+        f.write(cookie_content)
+
+
+
 def cleanup_old_entries():
     """Periodically clean up old entries to prevent memory leaks"""
     global last_cleanup, user_request_log, pending_files
