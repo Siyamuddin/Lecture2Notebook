@@ -209,3 +209,10 @@ def is_junior(id_str: str,limit: int) -> bool:
     # Handle edge cases like too short or non-numeric start
     print("Checking is junior finished...")
     return int(id_str[:2]) > limit
+
+
+
+
+#hackathonCode
+
+

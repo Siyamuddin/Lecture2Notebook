@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.background import BackgroundTask
-from models import YouTubeRequest, YouTubeResponse
+from models import YouTubeRequest, YouTubeResponse, AuthRequest, AuthResponse
 from auth import get_student_info
 from utils import download_audio, transcribe_audio, generate_code, save_to_notebook, generate_class_summery, is_junior
 from fastapi.responses import FileResponse
@@ -182,5 +182,21 @@ async def startup_event():
     print("Application started. Thread-safe rate limiting and file management enabled.")
     print(f"Rate limit: {RATE_LIMIT} requests per {WINDOW} seconds per user")
     print(f"Memory cleanup interval: {CLEANUP_INTERVAL} seconds")
+
+
+#hackathon
+@app.post("/auth/login", response_model=AuthResponse)
+async def generate_colab(req: AuthRequest):
+    student_info = get_student_info(req.id, req.password)
+    if not student_info:
+        raise HTTPException(status_code=401, detail="Authentication failed. Only Sejong students are allowed.")
+    return AuthResponse(
+        student_name=student_info['name'],
+        student_id=req.id,
+        student_department=student_info['department'],
+        student_major=student_info['major'],
+        success=True
+
+    )
 
 
